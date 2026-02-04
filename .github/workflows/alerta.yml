@@ -1,0 +1,30 @@
+name: Alerta a ntfy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Ejecutar Hola Mundo
+        run: node index.js
+
+      - name: Enviar notificación a ntfy
+        run: |
+          curl -s -X POST "https://ntfy.sh/devops-itla" \
+            -H "Title: Push a main ✅" \
+            -H "Priority: 4" \
+            -H "Tags: github,devops,itla" \
+            -d "Repo: ${{ github.repository }} | Branch: ${{ github.ref_name }} | Commit: ${{ github.sha }} | Autor: ${{ github.actor }}"
